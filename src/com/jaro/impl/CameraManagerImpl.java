@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import com.jaro.CameraManager;
+import com.jaro.Config;
 import com.jaro.Size;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class CameraManagerImpl implements CameraManager {
     private List<Camera.Size> supportedImageSizes;
     private boolean previewRunning = false;
     private SurfaceHolder surfaceHolder;
+    private Config config;
 
     // TODO: make configurable
     private int cnt = 0;
@@ -40,7 +42,8 @@ public class CameraManagerImpl implements CameraManager {
     }
 
     @Override
-    public void init(SurfaceHolder surfaceHolder) {
+    public void init(SurfaceHolder surfaceHolder, Config config) {
+        this.config = config;
         this.surfaceHolder = surfaceHolder;
         cameraExecutor = Executors.newScheduledThreadPool(1);
 
@@ -64,11 +67,11 @@ public class CameraManagerImpl implements CameraManager {
     }
 
     @Override
-    public void capturePhoto(final boolean autoFocus, final Size pictureSize) {
+    public void capturePhoto() {
         cameraExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                takePhoto(autoFocus, pictureSize);
+                takePhoto(config.getAutoFocus(), config.getPictureSize());
             }
         });
     }
@@ -115,14 +118,14 @@ public class CameraManagerImpl implements CameraManager {
     }
 
     @Override
-    public void beginPreview(final boolean autoFocus, final Size pictureSize) {
+    public void beginPreview() {
         cameraExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 if (isPreviewRunning()) {
                     return;
                 } else {
-                    startPreview(autoFocus, pictureSize);
+                    startPreview(config.getAutoFocus(), config.getPictureSize());
                 }
             }
         });
@@ -203,7 +206,7 @@ public class CameraManagerImpl implements CameraManager {
     }
 
     @Override
-    public void startCapture(final int delaySeconds, final boolean autoFocus, final Size pictureSize) {
+    public void startCapture() {
 
         if (isCaptureRunning()) {
             Log.i("toggle capture", "capture already running");
@@ -212,13 +215,13 @@ public class CameraManagerImpl implements CameraManager {
             captureFuture = cameraExecutor.schedule(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    takePhoto(autoFocus, pictureSize);
+                    takePhoto(config.getAutoFocus(), config.getPictureSize());
                     if (captureFuture != null) {
-                        cameraExecutor.schedule(this, delaySeconds, TimeUnit.SECONDS);
+                        cameraExecutor.schedule(this, config.getDelaySeconds(), TimeUnit.SECONDS);
                     }
                     return Boolean.TRUE;
                 }
-            }, delaySeconds, TimeUnit.SECONDS);
+            }, config.getDelaySeconds(), TimeUnit.SECONDS);
         }
 
     }
@@ -234,21 +237,12 @@ public class CameraManagerImpl implements CameraManager {
         }
     }
 
-    @Override
-    public List<Size> getSupportedPictureSizes() {
-        List<Size> sizes = new ArrayList<Size>();
-        for (Camera.Size size : supportedImageSizes) {
-            sizes.add(new Size(size));
-        }
-        return sizes;
-    }
-
     private void takePhoto(boolean autoFocus, Size pictureSize) {
         try {
             startPreview(autoFocus, pictureSize);
             try {
 
-
+                Thread.sleep(1500);
                 camera.takePicture(null, null, savePictureCallback);
             } catch (Exception e) {
                 Log.e("main", "failed to take picture");
@@ -272,7 +266,6 @@ public class CameraManagerImpl implements CameraManager {
                     list.add(size);
                 } catch (Exception e) {
                     Log.i("camera setup", "trying picture size " + size.width + "/" + size.height + " - FAIL");
-                    // ignore failed
                 }
             }
         } catch (Exception e) {

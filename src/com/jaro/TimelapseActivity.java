@@ -1,12 +1,9 @@
 package com.jaro;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.*;
@@ -21,7 +18,7 @@ public class TimelapseActivity extends Activity {
     private SurfaceView photoPreview;
 
     private LinearLayout layout;
-    SharedPreferences sharedPrefs;
+    Config config;
 
     CameraManager cameraManager;
 
@@ -30,7 +27,7 @@ public class TimelapseActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        config = new Config(PreferenceManager.getDefaultSharedPreferences(this));
 
 
         Log.i("main", "camera setup done");
@@ -40,7 +37,7 @@ public class TimelapseActivity extends Activity {
         photoPreview.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         cameraManager = new CameraManagerImpl();
-        cameraManager.init(photoPreview.getHolder());
+        cameraManager.init(photoPreview.getHolder(), config);
 
         Camera.Size cameraPreviewSize = cameraManager.getPreviewSize();
         android.view.ViewGroup.LayoutParams layoutParams = new android.view.ViewGroup.LayoutParams(cameraPreviewSize.width, cameraPreviewSize.height);
@@ -66,7 +63,7 @@ public class TimelapseActivity extends Activity {
             cameraManager.cancelPreview();
             button.setText("start preview");
         } else {
-            cameraManager.beginPreview(getAutoFocus(), getPictureSize());
+            cameraManager.beginPreview();
             button.setText("stop preview");
         }
         button.setEnabled(true);
@@ -92,7 +89,7 @@ public class TimelapseActivity extends Activity {
     }
 
     private void clearAllPhotos() {
-        clearDirectory(getSaveRoot());
+        clearDirectory(config.getSaveRoot());
     }
 
     private void clearDirectory(File directory) {
@@ -110,7 +107,7 @@ public class TimelapseActivity extends Activity {
     }
 
     private int countPhotos() {
-        File saveRoot = getSaveRoot();
+        File saveRoot = config.getSaveRoot();
         if (saveRoot.exists() && saveRoot.canRead()) {
             return saveRoot.list().length;
         } else {
@@ -119,7 +116,7 @@ public class TimelapseActivity extends Activity {
     }
 
     public void takePhoto(View view) {
-        cameraManager.capturePhoto(getAutoFocus(), getPictureSize());
+        cameraManager.capturePhoto();
     }
 
     public synchronized void toggleCapture(View view) {
@@ -128,7 +125,7 @@ public class TimelapseActivity extends Activity {
             cameraManager.stopCapture();
             button.setText("start capture");
         } else {
-            cameraManager.startCapture(getDelaySeconds(), getAutoFocus(), getPictureSize());
+            cameraManager.startCapture();
             button.setText("stop capture");
         }
     }
@@ -145,22 +142,6 @@ public class TimelapseActivity extends Activity {
     }
 
 
-    public int getDelaySeconds() {
-        return getPreferences(Context.MODE_PRIVATE).getInt("pref_photo_delay", 5);
-    }
 
-    public File getSaveRoot() {
-        String folder = sharedPrefs.getString("pref_save_folder", "");
-        File appRoot = new File(Environment.getExternalStorageDirectory(), "timelapse");
-        return new File(appRoot, folder);
-    }
 
-    public boolean getAutoFocus() {
-        return sharedPrefs.getBoolean("pref_auto_focus", false);
-    }
-
-    public Size getPictureSize() {
-        String str = sharedPrefs.getString("pref_resolution", null);
-        return new Size(str);
-    }
 }
