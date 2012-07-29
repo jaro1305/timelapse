@@ -94,12 +94,15 @@ public class TimelapseActivity extends Activity {
 
     private void clearDirectory(File directory) {
         Log.i("clearDirectory", "clearing " + directory.getAbsolutePath());
-        if (directory != null && directory.exists() && directory.canWrite()) {
-            for (File file : directory.listFiles()) {
-                if (file.isDirectory()) {
-                    clearDirectory(file);
+        if (directory != null && directory.exists() && directory.canWrite() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        clearDirectory(file);
+                    }
+                    file.delete();
                 }
-                file.delete();
             }
         } else {
             Log.e("clearDirectory", "can't clean directory [" + directory + "]");
@@ -132,7 +135,6 @@ public class TimelapseActivity extends Activity {
 
     @Override
     protected void onStop() {
-        Log.i("camera", "camera released");
         super.onStop();
     }
 

@@ -1,7 +1,6 @@
 package com.jaro.impl;
 
 import android.hardware.Camera;
-import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import com.jaro.CameraManager;
@@ -177,8 +176,7 @@ public class CameraManagerImpl implements CameraManager {
     private class SavePictureCallback implements Camera.PictureCallback {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
-            File saveRoot = getSaveRoot();
-            File file = new File(saveRoot, "picture" + (cnt++) + ".jpeg");
+            File file = new File(config.getSaveRoot(), "picture" + (cnt++) + ".jpeg");
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(file, false);
@@ -197,11 +195,6 @@ public class CameraManagerImpl implements CameraManager {
                 Log.i("camera", "stopping preview");
             }
             Log.i("capture", "exists: " + file.exists() + " size: " + file.length());
-        }
-
-        private File getSaveRoot() {
-            // TODO: remove
-            return new File(Environment.getExternalStorageDirectory(), "timelapse");
         }
     }
 

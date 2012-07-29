@@ -2,6 +2,7 @@ package com.jaro;
 
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 
@@ -21,13 +22,21 @@ public class Config {
     }
 
     public File getSaveRoot() {
-        String folder = sharedPreferences.getString("pref_save_folder", "");
+        String relativeFolder = sharedPreferences.getString("pref_save_folder", "");
         File appRoot = new File(Environment.getExternalStorageDirectory(), "timelapse");
-        return new File(appRoot, folder);
+        File saveRoot = new File(appRoot, relativeFolder);
+        if (!saveRoot.exists()) {
+            boolean success = saveRoot.mkdirs();
+            if (!success) {
+                Log.e("getSaveRoot", "failed to create save directory");
+            }
+        }
+        Log.i("getSaveRoot", "using save directory [" + saveRoot.getAbsolutePath() + "]");
+        return saveRoot;
     }
 
     public int getDelaySeconds() {
-        return sharedPreferences.getInt("pref_photo_delay", 5);
+        return Integer.parseInt(sharedPreferences.getString("pref_photo_delay", "5"));
     }
 
 
