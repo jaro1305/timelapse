@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/mainLayout"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_height="45px"
+                  android:layout_width="fill_parent">
+
+
+        <Button android:id="@+id/toggle_capture_button"
+                android:clickable="true"
+                android:text="start capture"
+                android:enabled="true"
+                android:layout_height="45px"
+                android:layout_width="wrap_content"
+                android:onClick="toggleCapture"/>
+
+        <Button android:id="@+id/toggle_preview_button"
+                android:clickable="true"
+                android:text="start preview"
+                android:enabled="true"
+                android:layout_height="45px"
+                android:layout_width="wrap_content"
+                android:onClick="togglePreview"/>
+
+        <Button android:id="@+id/take_photo"
+                android:clickable="true"
+                android:text="take photo"
+                android:enabled="true"
+                android:layout_height="45px"
+                android:layout_width="fill_parent"
+                android:onClick="takePhoto"/>
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/photos_count"
+              android:text="photos count:"
+              android:layout_height="20px"
+              android:layout_width="match_parent"/>
+
+    <!--<SurfaceView-->
+              <!--android:id="@+id/proto_preview"-->
+              <!--android:layout_width="240px"-->
+              <!--android:layout_height="160px"-->
+              <!--/>-->
+
+</LinearLayout>
+

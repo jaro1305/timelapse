@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+            android:id="@+id/pref_auto_focus"
+            android:key="pref_auto_focus"
+            android:title="@string/pref_auto_focus"
+            android:defaultValue="true" />
+
+    <EditTextPreference
+            android:id="@+id/pref_photo_delay"
+            android:key="pref_photo_delay"
+            android:defaultValue="5"
+            android:title="@string/pref_photo_delay" />
+
+    <EditTextPreference
+            android:id="@+id/pref_save_folder"
+            android:key="pref_save_folder"
+            android:defaultValue="one"
+            android:title="@string/pref_saveFolder" />
+
+
+    <ListPreference
+            android:id="@+id/pref_resolution"
+            android:key="pref_resolution"
+            android:title="@string/pref_resolution"
+            android:defaultValue="1024x768"
+            android:entries="@array/pref_resolutions"
+            android:entryValues="@array/pref_resolutions"/>
+
+</PreferenceScreen>

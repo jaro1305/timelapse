@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="pref_resolutions">
+        <item>272x272</item>
+        <item>640x480</item>
+        <item>1024x768</item>
+        <item>1280x960</item>
+        <item>1600x1200</item>
+        <item>2592x1952</item>
+    </string-array>
+</resources>

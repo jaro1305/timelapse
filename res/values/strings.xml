@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">timelapse</string>
+    <string name="pref_sync">sync</string>
+    <string name="pref_sync_summ">pref_sync_summ</string>
+    <string name="pref_syncConnectionType">pref_syncConnectionType</string>
+    <string name="pref_syncConnectionTypes_default"></string>
+
+    <string name="clear_all">clear all</string>
+    <string name="settings">settings</string>
+    <string name="pref_auto_focus">auto focus</string>
+    <string name="pref_photo_delay">photo delay</string>
+    <string name="pref_resolution">photo resolution</string>
+    <string name="pref_saveFolder">photo save folder</string>
+</resources>
