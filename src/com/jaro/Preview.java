@@ -13,5 +13,4 @@ public class Preview extends SurfaceView {
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-
 }
